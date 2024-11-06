@@ -18,5 +18,18 @@ jobs:
         with:
           go-version: '1.23.0'
 
+      - name: Service account auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: notley-440902
+
       - name: Build binary
         run: ./scripts/buildprod.sh
+
+      - name: Deploy to GCP
+        run: gcloud builds submit --tag us-central1-docker.pkg.dev/notley-440902/notely-ar-repo/notely:v1 .
